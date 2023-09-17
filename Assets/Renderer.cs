@@ -17,7 +17,7 @@ public class Renderer : MonoBehaviour
     float[] rayDistance;
 
     GameObject previousCollider;
-
+    Vector2 previousNormal;
     public void Initialize(int _rays)
     {
         width = xy2.position.x - xy1.position.x;
@@ -51,19 +51,12 @@ public class Renderer : MonoBehaviour
 
         for(int i = 0; i < pixelsList.Count; i++)
         {
-            pixelsList[i].GetComponent<SpriteRenderer>().color = ColorAugmentor(rayColors[i], rayDistance[i], rayHitList[i], i);
-            pixelsList[i].transform.localScale = new Vector2(pixelsList[i].transform.localScale.x, height / Mathf.Sqrt(rayDistance[i]));
+            pixelsList[i].GetComponent<SpriteRenderer>().color = ColorAugmentor(rayColors[i], rayDistance[i], rayHitList[i], i, playerDirection, _normals[i]);
+            pixelsList[i].transform.localScale = new Vector2(pixelsList[i].transform.localScale.x, height / Mathf.Sqrt(rayDistance[i]) + 0.5f);
         }
     }
-    Color ColorAugmentor(Color _color, float _distance, GameObject _collider, int _index)
+    Color ColorAugmentor(Color _color, float _distance, GameObject _collider, int _index, Vector2 _playerDirection, Vector2 _faceNormal)
     {
-        if(previousCollider != _collider)
-        {
-            previousCollider = _collider;
-            rayDistance[_index] = rayDistance[_index - 1];
-            return Color.cyan;
-        }
-        previousCollider = _collider;
         return Color.Lerp(_color, Color.black, Mathf.Sqrt(_distance) / 2f - 1);
     }
 }
